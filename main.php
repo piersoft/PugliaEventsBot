@@ -95,6 +95,16 @@ exit;
 					$today=time();
 //echo $count;
 //  $count=3;
+function decode_entities($text) {
+
+								$text=htmlentities($text, ENT_COMPAT,'ISO-8859-1', true);
+							$text= preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
+								$text= preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
+							$text= html_entity_decode($text,ENT_COMPAT,"UTF-8"); #NOTE: UTF-8 does not work!
+
+	return $text;
+}
+
 	for ($i=$inizio;$i<$count;$i++){
 
 		$html =str_replace("/","-",$csv[$i][14]);
@@ -114,7 +124,7 @@ if($csv[$i][2] !=NULL) $homepage .="Tel: ".$csv[$i][2]."\n";
 if($csv[$i][3] !=NULL)$homepage .="Email: ".$csv[$i][3]."\n";
 if($csv[$i][4] !=NULL)$homepage .="Web: ".$csv[$i][4]."\n";
 $homepage .="Ticket: ".$csv[$i][7]."\n";
-$homepage .="Descrizione: ".$csv[$i][9]."\n";
+$homepage .="Descrizione: ".decode_entities($csv[$i][9])."\n";
 $homepage .="Inizio: ".$csv[$i][14]."\n";
 $homepage .="Fine: ".$csv[$i][15]."\n";
 $homepage .="Foto: ".$csv[$i][16]."\n";
@@ -152,15 +162,15 @@ exit;
 			$telegram->sendPhoto($contentp);
 			if(strpos($text,'?') !== false){
 				$text=str_replace("?","",$text);
-
-				$urlgd  ="https://spreadsheets.google.com/tq?tqx=out:csv&tq=SELECT%20%2A%20WHERE%20A%20LIKE%20%27%25";
-				$urlgd .=$text;
-				$urlgd .="%25%27&key=1KPGAvaSToouxGhy3Av1E6XUCvOJL43rLcLhXCy5zjX4&gid=1044676138";
-				$text=str_replace(" ","%20",$text);
 				$location="Sto cercando gli eventi aventi nel titolo: ".$text;
 				$content = array('chat_id' => $chat_id, 'text' => $location,'disable_web_page_preview'=>true);
 				$telegram->sendMessage($content);
+				$text=str_replace(" ","%20",$text);
+				$urlgd  ="https://spreadsheets.google.com/tq?tqx=out:csv&tq=SELECT%20%2A%20WHERE%20A%20LIKE%20%27%25";
+				$urlgd .=$text;
+				$urlgd .="%25%27&key=1KPGAvaSToouxGhy3Av1E6XUCvOJL43rLcLhXCy5zjX4&gid=1044676138";
 				sleep (1);
+
 			}else{
 
 								$location="Sto cercando gli eventi censiti da PugliaEvents del Comune di: ".$text;
@@ -191,7 +201,14 @@ exit;
 						$content = array('chat_id' => $chat_id, 'text' => $location,'disable_web_page_preview'=>true);
 						$telegram->sendMessage($content);
 					}
+					function decode_entities($text) {
 
+													$text=htmlentities($text, ENT_COMPAT,'ISO-8859-1', true);
+												$text= preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
+													$text= preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
+												$text= html_entity_decode($text,ENT_COMPAT,"UTF-8"); #NOTE: UTF-8 does not work!
+		return $text;
+					}
 				for ($i=$inizio;$i<$count;$i++){
 
 
@@ -203,7 +220,7 @@ exit;
 					if($csv[$i][3] !=NULL)$homepage .="Email: ".$csv[$i][3]."\n";
 					if($csv[$i][4] !=NULL)$homepage .="Web: ".$csv[$i][4]."\n";
 					$homepage .="Ticket: ".$csv[$i][7]."\n";
-					$homepage .="Descrizione: ".utf8_encode($csv[$i][9])."\n";
+					$homepage .="Descrizione: ".decode_entities($csv[$i][9])."\n";
 					$homepage .="Inizio: ".$csv[$i][14]."\n";
 					$homepage .="Fine: ".$csv[$i][15]."\n";
 					$homepage .="Foto: ".$csv[$i][16]."\n";
@@ -287,6 +304,14 @@ function location_manager($telegram,$user_id,$chat_id,$location)
 						$content = array('chat_id' => $chat_id, 'text' => $location,'disable_web_page_preview'=>true);
 						$telegram->sendMessage($content);
 					}
+					function decode_entities($text) {
+
+													$text=htmlentities($text, ENT_COMPAT,'ISO-8859-1', true);
+												$text= preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
+													$text= preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
+												$text= html_entity_decode($text,ENT_COMPAT,"UTF-8"); #NOTE: UTF-8 does not work!
+	return $text;
+					}
 				  //echo $count;
 				//  $count=3;
 					for ($i=$inizio;$i<$count;$i++){
@@ -299,7 +324,7 @@ function location_manager($telegram,$user_id,$chat_id,$location)
 						if($csv[$i][3] !=NULL)$homepage .="Email: ".$csv[$i][3]."\n";
 						if($csv[$i][4] !=NULL)$homepage .="Web: ".$csv[$i][4]."\n";
 						$homepage .="Ticket: ".$csv[$i][7]."\n";
-						$homepage .="Descrizione: ".$csv[$i][9]."\n";
+						$homepage .="Descrizione: ".decode_entities($csv[$i][9])."\n";
 						$homepage .="Inizio: ".$csv[$i][14]."\n";
 						$homepage .="Fine: ".$csv[$i][15]."\n";
 						$homepage .="Foto: ".$csv[$i][16]."\n";
